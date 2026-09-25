@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>MeshScope — Live service traffic</title>
+<meta name="description" content="MeshScope — watch traffic move between your services in real time: topology, zones, traces, alerts." />
+<meta name="theme-color" content="#eef2fb" />
+
+<!-- every path here is relative, so the site also works from a
+     GitHub Pages project URL such as /username.github.io/meshscope/ -->
+<link rel="icon" href="favicon.ico" sizes="32x32" />
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="MeshScope — Live service traffic" />
+<meta property="og:description" content="Topology, zones, traces and alerts for a service mesh, in one console." />
+<meta property="og:image" content="assets/img/og-cover.png" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/css/base.css" />
+<link rel="stylesheet" href="assets/css/console.css" />
+</head>
+<body>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+<defs>
+  <linearGradient id="hubg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#5b63f5"/><stop offset="1" stop-color="#3038d6"/>
+  </linearGradient>
+  <linearGradient id="barLow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5c8aff"/><stop offset="1" stop-color="#2f63f5"/></linearGradient>
+  <linearGradient id="barMid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc061"/><stop offset="1" stop-color="#ffab2e"/></linearGradient>
+  <linearGradient id="barHigh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff7a9c"/><stop offset="1" stop-color="#ff4d78"/></linearGradient>
+</defs>
+<symbol id="mark" viewBox="0 0 34 34">
+  <circle class="core" cx="17" cy="17" r="1.9"/>
+  <circle class="d" cx="22" cy="17" r="1.5" style="animation-delay:.05s"/>
+  <circle class="d" cx="19.5" cy="21.33" r="1.5" style="animation-delay:.11s"/>
+  <circle class="d" cx="14.5" cy="21.33" r="1.5" style="animation-delay:.17s"/>
+  <circle class="d" cx="12" cy="17" r="1.5" style="animation-delay:.23s"/>
+  <circle class="d" cx="14.5" cy="12.67" r="1.5" style="animation-delay:.29s"/>
+  <circle class="d" cx="19.5" cy="12.67" r="1.5" style="animation-delay:.35s"/>
+  <circle class="d" cx="27" cy="17" r="1.15" style="animation-delay:.30s"/>
+  <circle class="d" cx="25.09" cy="22.88" r="1.15" style="animation-delay:.38s"/>
+  <circle class="d" cx="20.09" cy="26.51" r="1.15" style="animation-delay:.46s"/>
+  <circle class="d" cx="13.91" cy="26.51" r="1.15" style="animation-delay:.54s"/>
+  <circle class="d" cx="8.91" cy="22.88" r="1.15" style="animation-delay:.62s"/>
+  <circle class="d" cx="7" cy="17" r="1.15" style="animation-delay:.70s"/>
+  <circle class="d" cx="8.91" cy="11.12" r="1.15" style="animation-delay:.78s"/>
+  <circle class="d" cx="13.91" cy="7.49" r="1.15" style="animation-delay:.86s"/>
+  <circle class="d" cx="20.09" cy="7.49" r="1.15" style="animation-delay:.94s"/>
+  <circle class="d" cx="25.09" cy="11.12" r="1.15" style="animation-delay:1.02s"/>
+</symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+<symbol id="i-chevl" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+<symbol id="i-chevr" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5l12 7.5-12 7.5z"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5h3v14H8zM13 5h3v14h-3z"/></symbol>
+<symbol id="i-sync" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-13.6-4.6L4 9"/><path d="M4 5v4h4"/><path d="M4 13a8 8 0 0 0 13.6 4.6L20 15"/><path d="M20 19v-4h-4"/></symbol>
+<symbol id="i-load" viewBox="0 0 24 24"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4l2 2.5h7A1.5 1.5 0 0 1 19 10v7a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 3 17z"/></symbol>
+<symbol id="i-save" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M8 11.5l4 4 4-4"/><path d="M4.5 18.5h15"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></symbol>
+<symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 8h10M18 8h2M4 16h4M12 16h8"/><circle cx="16" cy="8" r="2"/><circle cx="10" cy="16" r="2"/></symbol>
+<symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7L4 8.5"/><path d="M4 4v5h5"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></symbol>
+<symbol id="i-cols" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="16" rx="1.5"/><rect x="13" y="4" width="7" height="16" rx="1.5"/></symbol>
+<symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.4 6H14a3 3 0 0 1 0 6h-4a3 3 0 0 0 0 6h5.6"/></symbol>
+<symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6.5" rx="7" ry="2.8"/><path d="M5 6.5v11c0 1.55 3.13 2.8 7 2.8s7-1.25 7-2.8v-11"/><path d="M5 12c0 1.55 3.13 2.8 7 2.8s7-1.25 7-2.8"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3.5l8 4.2-8 4.2-8-4.2z"/><path d="M4 12.5l8 4.2 8-4.2"/><path d="M4 16.8l8 4.2 8-4.2"/></symbol>
+<symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 4 12 2.5-6h5"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6.5 10a5.5 5.5 0 1 1 11 0c0 4 1.5 5.5 1.5 5.5H5s1.5-1.5 1.5-5.5z"/><path d="M10.2 19a2 2 0 0 0 3.6 0"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M9.8 9.6a2.3 2.3 0 1 1 3 2.2v1.4"/><circle cx="12.8" cy="16.4" r=".6" fill="currentColor"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+<symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M4 4l16 16"/><path d="M9.6 9.7A2.8 2.8 0 0 0 12 14.8c.7 0 1.4-.3 1.9-.7"/><path d="M6.3 6.7C3.9 8.3 2.5 12 2.5 12s3.5 6.2 9.5 6.2c1.6 0 3-.4 4.2-1"/><path d="M18.4 15.2c1.9-1.6 3.1-3.2 3.1-3.2S18 5.8 12 5.8c-.8 0-1.5.1-2.2.3"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+<symbol id="i-up" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></symbol>
+<symbol id="i-expand" viewBox="0 0 24 24"><path d="M9 4H4v5"/><path d="M15 20h5v-5"/><path d="M20 9V4h-5"/><path d="M4 15v5h5"/></symbol>
+<symbol id="i-ext" viewBox="0 0 24 24"><path d="M13 4h7v7"/><path d="M20 4l-9 9"/><path d="M18 14.5v4A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6h4"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.2M12 18.3v2.2M20.5 12h-2.2M5.7 12H3.5M18 6l-1.6 1.6M7.6 16.4 6 18M18 18l-1.6-1.6M7.6 7.6 6 6"/></symbol>
+<symbol id="i-sort" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M7 14l5 5 5-5"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 13h6l-1 8 8-10h-6z"/></symbol>
+<symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 4.5l8.5 15h-17z"/><path d="M12 10v4M12 16.8v.2"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M3.8 12h16.4"/><path d="M12 3.8c2.1 2.3 3.2 5.2 3.2 8.2s-1.1 5.9-3.2 8.2c-2.1-2.3-3.2-5.2-3.2-8.2S9.9 6.1 12 3.8z"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4V12l3.2 2"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2.2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/></symbol>
+<symbol id="i-mark2" viewBox="0 0 24 24"><path d="M6.5 4.5h11a1 1 0 0 1 1 1V20l-6.5-4-6.5 4V5.5a1 1 0 0 1 1-1z"/></symbol>
+<symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 5.5h16l-6.2 7.3V19l-3.6-2v-4.2z"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24"><path d="M15 8V6a1.5 1.5 0 0 0-1.5-1.5h-7A1.5 1.5 0 0 0 5 6v12a1.5 1.5 0 0 0 1.5 1.5h7A1.5 1.5 0 0 0 15 18v-2"/><path d="M19 12H9.5"/><path d="M16 8.5l3.5 3.5-3.5 3.5"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.8 14.12 9.09 19.8 9.47 15.42 13.11 16.82 18.63 12 15.6 7.18 18.63 8.58 13.11 4.2 9.47 9.88 9.09Z" stroke-linejoin="round"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="i-img" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M5 16.5l4.5-4 4 3.2 3-2.4 3 2.7"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="M9 7.5 4.5 12 9 16.5M15 7.5 19.5 12 15 16.5"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9.5" rx="2.2"/><path d="M8.2 10.5V8a3.8 3.8 0 0 1 7.6 0v2.5"/></symbol>
+</svg>
+
+<div class="loadbar" id="loadbar"></div>
+
+<!-- ============ sign in ============ -->
+<section class="screen login" id="login">
+  <canvas id="meshCanvas"></canvas>
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+  <div class="brief">
+    <div class="brandline rise" style="animation-delay:.10s">
+      <svg class="brandmark" viewBox="0 0 34 34"><use href="#mark"/></svg>
+      <span class="wordmark">MeshScope <span>/ live traffic</span></span>
+    </div>
+    <div>
+      <h1 class="rise" style="animation-delay:.18s">Every hop,<br>every <em>millisecond</em>.</h1>
+      <p class="rise" style="animation-delay:.26s">The console reads your service mesh live — who is calling whom, how fast, and what is about to fall over. Sign in to pick up the eu-west-1 map where you left it.</p>
+      <ul class="facets rise" style="animation-delay:.34s">
+        <li><span class="dot ok"></span><b>214</b> services nominal</li>
+        <li><span class="dot warm"></span><b>6</b> warming</li>
+        <li><span class="dot alert"></span><b>2</b> alerting</li>
+      </ul>
+    </div>
+    <div class="brief-foot rise" style="animation-delay:.42s">
+      <svg class="ico" style="width:13px;height:13px;stroke:var(--ink-3)"><use href="#i-bolt"/></svg>
+      Collector last flushed 4s ago · region eu-west-1 · retention 30d
+    </div>
+  </div>
+
+  <div class="login-side">
+    <form class="card rise" id="loginForm" style="animation-delay:.30s" novalidate>
+      <h2>Sign in</h2>
+      <p class="sub">Use your work account to open the traffic console.</p>
+
+      <div class="field" id="fEmail">
+        <input id="email" type="email" placeholder=" " autocomplete="username" value="muhammad.alfian@pkp.co.id" />
+        <label for="email">Work email</label>
+      </div>
+      <div class="field-msg" id="mEmail">Enter the email your team uses for MeshScope.</div>
+
+      <div class="field" id="fPass">
+        <input id="password" type="password" placeholder=" " autocomplete="current-password" />
+        <label for="password">Password</label>
+        <button type="button" class="peek" id="peek" aria-label="Show password" aria-pressed="false">
+          <svg viewBox="0 0 24 24"><use href="#i-eye" id="peekIcon"/></svg>
+        </button>
+      </div>
+      <div class="field-msg" id="mPass">Password needs at least 6 characters.</div>
+
+      <div class="row">
+        <label class="check">
+          <input type="checkbox" id="remember" checked />
+          <span class="box"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span>
+          Keep me signed in
+        </label>
+        <a href="#" class="link">Forgot password</a>
+      </div>
+
+      <button class="btn-go" id="signIn" type="submit" data-state="idle">
+        <span class="shine"></span>
+        <span class="lbl">Open console</span>
+        <span class="spin-ring"></span>
+        <svg class="tick" viewBox="0 0 24 24"><use href="#i-check"/></svg>
+      </button>
+
+      <div class="alt">or continue with</div>
+      <div class="sso">
+        <button type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3.5v17M3.5 12h17"/></svg> Okta</button>
+        <button type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg> Azure AD</button>
+      </div>
+      <p class="hint">Prototype — any password of 6+ characters opens the console. Press <kbd>Enter</kbd> to go straight in.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ============ console ============ -->
+<section class="screen app" id="app" hidden>
+  <div class="scrim" id="scrim"></div>
+
+  <aside class="side">
+    <div class="side-head">
+      <svg class="brandmark stagger-x" viewBox="0 0 34 34" style="animation-delay:.02s"><use href="#mark"/></svg>
+      <span class="wordmark mini-hide stagger-x" style="animation-delay:.05s">MeshScope</span>
+      <button class="collapse" id="sideToggle" aria-label="Collapse sidebar" aria-expanded="true">
+        <svg class="ico"><use href="#i-chevl"/></svg>
+      </button>
+    </div>
+
+    <button class="envbtn stagger-x" id="envBtn" style="animation-delay:.08s" aria-haspopup="menu" aria-expanded="false">
+      <span class="glyph"><svg class="ico"><use href="#i-globe"/></svg></span>
+      <span class="stack mini-hide"><span class="k">Region</span><span class="v" id="envName">eu-west-1 · prod</span></span>
+      <svg class="chev mini-hide"><use href="#i-chev"/></svg>
+      <span class="mini-caret"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+      <span class="tipr">eu-west-1 · prod — switch region</span>
+    </button>
+
+    <nav class="nav" aria-label="Sections">
+      <div class="nav-lab stagger-x" style="animation-delay:.10s">Monitor</div>
+      <button class="nav-item stagger-x" style="animation-delay:.12s" aria-current="true">
+        <svg class="ico"><use href="#i-route"/></svg><span class="t">Topology</span><span class="tipr">Topology</span></button>
+      <button class="nav-item stagger-x" style="animation-delay:.14s">
+        <svg class="ico"><use href="#i-db"/></svg><span class="t">Services</span><span class="badge quiet">222</span><span class="tipr">Services</span></button>
+      <button class="nav-item stagger-x" style="animation-delay:.16s">
+        <svg class="ico"><use href="#i-layers"/></svg><span class="t">Zones</span><span class="tipr">Zones</span></button>
+      <button class="nav-item stagger-x" style="animation-delay:.18s">
+        <svg class="ico"><use href="#i-pulse"/></svg><span class="t">Traces</span><span class="tipr">Traces</span></button>
+
+      <div class="nav-lab stagger-x" style="animation-delay:.20s">Signals</div>
+      <button class="nav-item stagger-x" style="animation-delay:.22s">
+        <svg class="ico"><use href="#i-bell"/></svg><span class="t">Alerts</span><span class="badge">2</span><span class="tipr">Alerts · 2 firing</span></button>
+      <button class="nav-item stagger-x" style="animation-delay:.24s">
+        <svg class="ico"><use href="#i-warn"/></svg><span class="t">Incidents</span><span class="badge quiet">5</span><span class="tipr">Incidents</span></button>
+
+      <div class="nav-lab stagger-x" style="animation-delay:.26s">Library</div>
+      <button class="nav-item stagger-x" style="animation-delay:.28s">
+        <svg class="ico"><use href="#i-mark2"/></svg><span class="t">Saved views</span><span class="tipr">Saved views</span></button>
+      <button class="nav-item stagger-x" style="animation-delay:.30s">
+        <svg class="ico"><use href="#i-book"/></svg><span class="t">Runbooks</span><span class="tipr">Runbooks</span></button>
+      <button class="nav-item stagger-x" style="animation-delay:.32s">
+        <svg class="ico"><use href="#i-gear"/></svg><span class="t">Settings</span><span class="tipr">Settings</span></button>
+    </nav>
+
+    <div class="side-foot">
+      <div class="health stagger-x" style="animation-delay:.34s">
+        <div class="h-top mini-hide"><span class="h-k">Fleet health</span><span class="h-v">222 svc</span></div>
+        <div class="hbar">
+          <i style="flex-grow:214;background:linear-gradient(90deg,#3ad2a0,#2fbf8f)"></i>
+          <i style="flex-grow:6;background:var(--warm)"></i>
+          <i style="flex-grow:2;background:var(--alert)"></i>
+        </div>
+        <div class="hlegend">
+          <span><i class="dot ok"></i><b>214</b></span>
+          <span><i class="dot warm"></i><b>6</b></span>
+          <span><i class="dot alert"></i><b>2</b></span>
+        </div>
+      </div>
+      <button class="user stagger-x" id="userBtn" style="animation-delay:.36s" aria-haspopup="menu" aria-expanded="false">
+        <span class="avatar">MA</span>
+        <span class="stack mini-hide">
+          <span class="v">Muhammad Alfian</span>
+          <span class="k" style="text-transform:none;letter-spacing:0;font-size:10px">SRE · on call</span>
+        </span>
+        <svg class="chev mini-hide"><use href="#i-chev"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="toolbar">
+      <button class="icon-btn only-sm" id="sideOpen" aria-label="Open sidebar"><svg class="ico"><use href="#i-menu"/></svg></button>
+
+      <button class="ctl stagger" id="rangeBtn" style="animation-delay:.06s" aria-haspopup="menu" aria-expanded="false">
+        <div class="stack"><span class="k">Interval</span><span class="v" id="rangeLabel">last 5 min</span></div>
+        <span class="sep"></span>
+        <div class="stack"><span class="k">21.09.2026</span><span class="v soft" id="rangeWindow">12:30 – 13:10</span></div>
+        <svg class="chev"><use href="#i-chev"/></svg>
+      </button>
+
+      <button class="icon-btn play stagger" id="playBtn" style="animation-delay:.10s" data-playing="true" aria-label="Pause live stream">
+        <svg class="ico"><use href="#i-pause" id="playIcon"/></svg>
+      </button>
+
+      <button class="ctl stagger hide-md" id="breakdownBtn" style="animation-delay:.14s" aria-haspopup="menu" aria-expanded="false">
+        <div class="stack"><span class="k">Breakdown</span><span class="v" id="breakdownLabel">Service › Zone › Pod</span></div>
+        <svg class="chev"><use href="#i-chev"/></svg>
+      </button>
+
+      <div class="ctl stagger hide-lg" style="animation-delay:.18s">
+        <span class="lab">Filter</span>
+        <button class="chip" id="fService" aria-haspopup="menu" aria-expanded="false">Service in <span class="count" id="cService">3</span></button>
+        <button class="chip" id="fZone" aria-haspopup="menu" aria-expanded="false">Zone in <span class="count" id="cZone">2</span></button>
+        <button class="chip" id="fIp" aria-haspopup="menu" aria-expanded="false">IP in <span class="count" id="cIp">1</span></button>
+        <button class="chip" id="fMore" aria-haspopup="menu" aria-expanded="false" aria-label="Filter presets" style="padding:5px 4px">
+          <svg class="chev"><use href="#i-chev"/></svg>
+        </button>
+      </div>
+
+      <span class="spacer"></span>
+
+      <div class="ctl stagger hide-md" style="animation-delay:.22s" title="Packets sampled per second">
+        <span class="dot ok" id="liveDot"></span>
+        <div class="stack"><span class="k">Live</span><span class="v mono" id="pps">2 418 pkt/s</span></div>
+      </div>
+
+      <button class="icon-btn sync stagger" id="syncBtn" style="animation-delay:.26s" aria-label="Refresh now"
+              title="Refresh the collector now">
+        <span class="ring"></span>
+        <svg class="ico"><use href="#i-sync"/></svg>
+      </button>
+
+      <button class="btn-dark stagger hide-sm" id="loadBtn" style="animation-delay:.30s" aria-haspopup="menu" aria-expanded="false">
+        <svg class="ico"><use href="#i-load"/></svg> Load <svg class="chev"><use href="#i-chev"/></svg>
+      </button>
+      <button class="btn-dark stagger" id="saveBtn" style="animation-delay:.34s" aria-haspopup="menu" aria-expanded="false">
+        <svg class="ico"><use href="#i-save"/></svg> Save <svg class="chev"><use href="#i-chev"/></svg>
+      </button>
+    </header>
+
+    <div class="ribbon">
+      <div class="zoomers stagger" style="animation-delay:.38s">
+        <button id="tzIn" aria-label="Zoom into time range"><svg class="ico" style="width:14px;height:14px"><use href="#i-plus"/></svg></button>
+        <span class="sep"></span>
+        <button id="tzOut" aria-label="Zoom out of time range"><svg class="ico" style="width:14px;height:14px"><use href="#i-minus"/></svg></button>
+      </div>
+
+      <div class="track stagger" id="track" style="animation-delay:.42s" role="slider" tabindex="0"
+           aria-label="Playhead" aria-valuemin="0" aria-valuemax="100" aria-valuenow="52">
+        <div class="sel" id="sel"></div>
+        <div class="ticks" id="ticks"></div>
+        <div class="head" id="head"></div>
+        <div class="time-tip" id="timeTip">12:55</div>
+      </div>
+
+      <div class="viewtoggle stagger" style="animation-delay:.46s" role="group" aria-label="Layout">
+        <button id="vGrid" aria-pressed="true" aria-label="Map layout" title="Map layout">
+          <svg class="ico" style="width:14px;height:14px"><use href="#i-route"/></svg></button>
+        <button id="vSplit" aria-pressed="false" aria-label="Grid layout" title="Grid layout">
+          <svg class="ico" style="width:14px;height:14px"><use href="#i-grid"/></svg></button>
+      </div>
+    </div>
+
+    <div class="work">
+     <div class="view on" id="v-topology">
+      <div class="canvas" id="canvas">
+        <div class="grid-bg" id="gridBg"></div>
+        <div class="scan" id="scan"><i></i></div>
+        <div class="world" id="world">
+          <svg class="wires" id="wires" width="1400" height="560"></svg>
+          <div class="nodes" id="nodes"></div>
+        </div>
+
+        <div class="canvas-bar">
+          <div class="r">
+            <div class="search stagger" style="animation-delay:.52s">
+              <svg class="ico"><use href="#i-search"/></svg>
+              <input id="search" type="search" placeholder="Quick search" aria-label="Search services" />
+            </div>
+            <button class="pill-btn stagger" id="editBtn" style="animation-delay:.56s" aria-pressed="false">
+              <span class="dot"></span> Edit
+            </button>
+          </div>
+          <div class="r">
+            <button class="pill-btn stagger hide-sm" id="metricBtn" style="animation-delay:.60s" aria-haspopup="menu" aria-expanded="false">
+              <svg class="ico"><use href="#i-sliders"/></svg> <span id="metricLabel">Throughput</span>
+              <svg class="chev" style="width:11px;height:11px"><use href="#i-chev"/></svg>
+            </button>
+            <div class="stepper stagger hide-sm" style="animation-delay:.64s">
+              <button id="depthDown" aria-label="Fewer hops"><svg class="ico" style="width:12px;height:12px"><use href="#i-minus"/></svg></button>
+              <span class="val"><span id="depthVal">2</span> <b>hops in</b></span>
+              <button id="depthUp" aria-label="More hops"><svg class="ico" style="width:12px;height:12px"><use href="#i-plus"/></svg></button>
+            </div>
+            <button class="pill-btn stagger" id="resetBtn" style="animation-delay:.68s">
+              <svg class="ico"><use href="#i-reset"/></svg> Reset
+            </button>
+          </div>
+        </div>
+
+        <div class="minimap stagger" style="animation-delay:.72s">
+          <div class="mini-plot" id="miniPlot"><div class="mini-vp" id="miniVp"></div></div>
+          <div class="mini-foot">
+            <button id="zOut" aria-label="Zoom out"><svg class="ico" style="width:12px;height:12px"><use href="#i-minus"/></svg></button>
+            <span class="z" id="zoomVal">100%</span>
+            <button id="zIn" aria-label="Zoom in"><svg class="ico" style="width:12px;height:12px"><use href="#i-plus"/></svg></button>
+          </div>
+        </div>
+
+        <button class="dock-toggle" id="dockToggle" aria-expanded="true" aria-label="Collapse panels">
+          <svg class="ico" style="width:14px;height:14px"><use href="#i-chev"/></svg>
+        </button>
+      </div>
+
+      <div class="dock" id="dock">
+        <section class="pane stagger" style="animation-delay:.76s">
+          <div class="phead">
+            <span class="sq"><svg class="ico"><use href="#i-pulse"/></svg></span>
+            <h3>TCP Throughput</h3>
+            <span class="sp"></span>
+            <div class="legend">
+              <button class="lg" data-band="high"><i style="background:#ff4d78"></i>High <b id="lgHigh">439</b></button>
+              <button class="lg" data-band="mid"><i style="background:#ffab2e"></i>Medium <b id="lgMid">146</b></button>
+              <button class="lg" data-band="low"><i style="background:#2f63f5"></i>Low <b id="lgLow">2.3k</b></button>
+            </div>
+          </div>
+          <div class="chart">
+            <div class="yaxis"><span>800</span><span>600</span><span>400</span><span>200</span></div>
+            <div class="plot" id="plot">
+              <svg id="chartSvg" preserveAspectRatio="none"></svg>
+              <div class="ctip" id="ctip"></div>
+            </div>
+            <div class="alerts">
+              <div class="k"><svg class="ico"><use href="#i-warn"/></svg> Alerts</div>
+              <div class="v" id="alertCount">52</div>
+              <div class="s">Excellent</div>
+            </div>
+          </div>
+          <div class="xaxis" id="xaxis"></div>
+        </section>
+
+        <section class="pane stagger" style="animation-delay:.80s">
+          <div class="phead">
+            <span class="sq"><svg class="ico"><use href="#i-gear"/></svg></span>
+            <h3>Service Overview</h3>
+            <span class="sp"></span>
+            <button class="tbtn" aria-label="Open in new tab"><svg class="ico"><use href="#i-ext"/></svg></button>
+            <button class="tbtn" aria-label="Expand panel"><svg class="ico"><use href="#i-expand"/></svg></button>
+          </div>
+          <div class="tbl">
+            <table>
+              <thead><tr>
+                <th data-sort="name">Service</th>
+                <th data-sort="to" class="hide-sm">To</th>
+                <th data-sort="status">Status</th>
+                <th data-sort="cur" class="sorted desc" style="text-align:right">Current (kbps) <svg class="ico"><use href="#i-sort"/></svg></th>
+              </tr></thead>
+              <tbody id="tbody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+     </div><!-- /topology -->
+
+     <div class="view" id="v-services"></div>
+     <div class="view" id="v-zones"></div>
+     <div class="view" id="v-traces"></div>
+     <div class="view" id="v-alerts"></div>
+     <div class="view" id="v-incidents"></div>
+     <div class="view" id="v-saved"></div>
+     <div class="view" id="v-runbooks"></div>
+     <div class="view" id="v-settings"></div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"><svg class="ico"><use href="#i-check"/></svg><span id="toastText">Saved</span></div>
+</section>
+
+<script src="assets/js/core.js"></script>
+<script src="assets/js/console.js"></script>
+<script src="assets/js/views.js"></script>
+</body>
+</html>
