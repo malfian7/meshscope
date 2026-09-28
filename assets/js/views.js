@@ -38,9 +38,11 @@ function route(name){
   $('#app').dataset.route=name;
   mainEl.classList.toggle('bare',BARE.has(name));
   $$('.nav-item').forEach(b=>b.setAttribute('aria-current',String(b.dataset.route===name)));
+  $('#userBtn').setAttribute('aria-current',String(name==='profile'||name==='routing'));
   if(!view.dataset.built && BUILD[name]){ BUILD[name](view); view.dataset.built='1'; }
   stagRows(view);
   if(name==='topology') resizeSoon(80);
+  if(typeof onRoute==='function') onRoute(name);
 }
 
 /* ---------- services ---------- */
@@ -130,10 +132,10 @@ function closeModal(){
 }
 function openModal(spec){
   closeModal();
-  const s=el('div','scrim2'), m=el('div','modal');
+  const s=el('div','scrim2'), m=el('div','modal'+(spec.cls?' '+spec.cls:''));
   m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
   m.innerHTML=`<h3>${spec.title}</h3><p class="sub">${spec.sub||''}</p>${spec.body}
-    <div class="mfoot">${spec.actions.map((a,i)=>
+    <div class="mfoot">${spec.note?`<span class="mnote">${spec.note}</span>`:''}${spec.actions.map((a,i)=>
       `<button class="btn-s${a.solid?' solid':''}" data-a="${i}">${a.label}</button>`).join('')}</div>`;
   document.body.append(s,m);
   requestAnimationFrame(()=>{ s.classList.add('on'); m.classList.add('on'); });
@@ -150,7 +152,7 @@ function openModal(spec){
     b.setAttribute('aria-pressed','true');
   })));
   document.addEventListener('keydown',modalKeys,true);
-  setTimeout(()=>{ const f=m.querySelector('input,textarea'); f&&f.focus(); },90);
+  if(!spec.noFocus) setTimeout(()=>{ const f=m.querySelector('input,textarea'); f&&f.focus(); },90);
   modalEl=m; modalScrim=s;
   return m;
 }
@@ -698,7 +700,8 @@ const BUILD_settings=view=>{
   menu('setRetention','Retention',['7 days','30 days','90 days','1 year']);
   menu('setDensity','Density',['Comfortable','Compact','Spacious']);
   menu('setChannel','Slack channel',['#mesh-alerts','#sre-oncall','#payments-eng','#platform']);
-  $$('[data-help]',view).forEach(b=>b.addEventListener('click',()=>toast(b.dataset.help+' — prototype')));
+  $$('[data-help]',view).forEach(b=>b.addEventListener('click',()=>
+    b.dataset.help==='Keyboard shortcuts' ? openShortcuts() : toast(b.dataset.help+' — prototype')));
 };
 
 const BUILD={services:BUILD_services,zones:BUILD_zones,traces:BUILD_traces,alerts:BUILD_alerts,

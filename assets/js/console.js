@@ -572,7 +572,7 @@ bind('#userBtn',{
     {type:'sep'},
     {label:'Sign out',icon:'i-logout'},
   ],
-  onPick(it){ if(it.label==='Sign out') signOut(); else toast(it.label+' — prototype'); }
+  onPick(it){ if(it.label==='Sign out') signOut(); else openAccount(it.label); }
 });
 
 const root=document.documentElement;
@@ -701,11 +701,11 @@ $$('.nav-item').forEach((b,i)=>{
   });
 });
 addEventListener('keydown',e=>{
-  if($('#app').hidden||pop) return;
+  if($('#app').hidden||pop||modalEl) return;
   if(e.key==='['){ e.preventDefault(); $('#sideToggle').click(); }
   if(e.key==='/' && document.activeElement!==$('#search')){ e.preventDefault(); $('#search').focus(); }
   if(e.key==='Escape' && document.activeElement===$('#search')){ $('#search').value=''; $('#search').dispatchEvent(new Event('input')); $('#search').blur(); }
-  if(e.key===' ' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){ e.preventDefault(); $('#playBtn').click(); }
+  if(e.key===' ' && $('#app').dataset.route==='topology' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){ e.preventDefault(); $('#playBtn').click(); }
 });
 
 /* ============================================================
