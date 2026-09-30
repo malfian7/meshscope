@@ -64,7 +64,7 @@ const initials=n=>(n.trim().split(/\s+/).map(w=>w[0]||'').join('').slice(0,2)||'
 /* ============================================================
    PROFILE & PREFERENCES
    ============================================================ */
-const ME={name:'Muhammad Alfian',title:'Site Reliability Engineer',email:'muhammad.alfian@pkp.co.id',
+const ME={name:'Muhammad Alfian',title:'Site Reliability Engineer',email:'alfian@example.com',
   phone:'+62 812 3318 4410',tz:'Asia/Jakarta · WIB (UTC+7)',land:'Topology',win:'Last 5 minutes',
   clock:'24',unit:'kbps',rel:true,photo:null,tfa:false,status:'On call'};
 const STATUSES=[
@@ -445,7 +445,7 @@ const RT_DST=[
   {k:'phone',t:'Phone call',d:'+62 812 •••• 4410',i:'i-phone'},
   {k:'push',t:'Push notification',d:'MeshScope app · iPhone 15',i:'i-bell'},
   {k:'slack',t:'Slack',d:'#sre-oncall',i:'i-hash'},
-  {k:'email',t:'Email',d:'muhammad.alfian@…',i:'i-mail'},
+  {k:'email',t:'Email',d:'alfian@example.com',i:'i-mail'},
   {k:'digest',t:'Morning digest',d:'09:00 WIB · weekdays',i:'i-inbox'},
 ];
 const RT_WHEN=['Immediately','If not acked in 5m','If not acked in 10m','Batched hourly','Next digest'];

@@ -564,7 +564,7 @@ bind('#envBtn',()=>({
   }
 }));
 bind('#userBtn',{
-  title:'muhammad.alfian@pkp.co.id', width:240,
+  title:'alfian@example.com', width:240,
   items:[
     {label:'Profile & preferences',icon:'i-gear'},
     {label:'Notification routing',icon:'i-bell'},

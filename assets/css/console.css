@@ -809,8 +809,14 @@ button.ctl:active{transform:scale(.985)}
 @media (max-width:1080px){ .set-wrap{grid-template-columns:1fr} .set-side{position:static} }
 @media (max-width:1040px){ .hide-md{display:none} }
 @media (max-width:860px){
-  .login{grid-template-columns:1fr}
-  .brief{display:none}
+  /* phones keep a short intro above the card — people (and Google's
+     mobile-first crawler) should still learn what this page is */
+  .login{grid-template-columns:1fr;grid-template-rows:auto 1fr;overflow-y:auto}
+  .brief{padding:26px 24px 0;gap:16px;justify-content:flex-start}
+  .brief h1{font-size:30px;margin-bottom:10px}
+  .brief p{font-size:13.5px}
+  .brief .facets,.brief-foot{display:none}
+  .login-side{align-items:start;padding-top:18px;padding-bottom:28px}
   /* a bare route still needs the one button that opens the drawer */
   /* the hidden ribbon leaves the grid, so the rows must match what is shown */
   .main.bare{grid-template-rows:56px minmax(0,1fr)}

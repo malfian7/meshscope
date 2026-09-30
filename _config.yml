@@ -1,0 +1,52 @@
+# ------------------------------------------------------------
+#  MeshScope — site settings for GitHub Pages (Jekyll)
+#  GitHub Pages fills in `url` and `baseurl` for you, so the
+#  canonical links, sitemap and social cards always point at
+#  the address the site is really served from.
+# ------------------------------------------------------------
+title: MeshScope
+tagline: Service-Mesh Observability Dashboard UI Demo
+description: >-
+  Interactive UI demo of a service-mesh observability console: a live
+  topology map with animated traffic, traces, alerts, incidents and
+  on-call routing. Built with plain HTML, CSS and JavaScript.
+lang: en_US
+
+author:
+  name: Muhammad Alfian
+  # url: https://www.linkedin.com/in/your-handle   # uncomment and fill in
+
+# Uncomment and add your own handles to link them in the structured data
+# social:
+#   name: Muhammad Alfian
+#   links:
+#     - https://www.linkedin.com/in/your-handle
+#     - https://github.com/your-username
+# twitter:
+#   username: your-handle
+
+logo: /assets/img/icon-512.png
+
+# Every page shares the same social preview card
+defaults:
+  - scope:
+      path: ""
+    values:
+      image:
+        path: /assets/img/og-cover.png
+        width: 1200
+        height: 630
+        alt: MeshScope — a live service-mesh topology map with animated traffic
+
+# After adding the site to Google Search Console, paste the code here:
+# webmaster_verifications:
+#   google: PASTE-YOUR-VERIFICATION-CODE
+
+plugins:
+  - jekyll-seo-tag      # <title>, meta description, Open Graph, Twitter card, JSON-LD
+  - jekyll-sitemap      # builds /sitemap.xml automatically
+
+# Files that should not be published as pages
+exclude:
+  - README.md
+  - LICENSE

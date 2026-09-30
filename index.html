@@ -1,24 +1,50 @@
+---
+# Front matter: tells GitHub Pages to run this page through Jekyll
+# so the {% seo %} tag and the Liquid values below get filled in.
+layout: null
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>MeshScope — Live service traffic</title>
-<meta name="description" content="MeshScope — watch traffic move between your services in real time: topology, zones, traces, alerts." />
+<!-- {% seo %} is filled in by GitHub Pages (jekyll-seo-tag): <title>, description,
+     canonical URL, Open Graph + Twitter cards and JSON-LD, all from _config.yml -->
+{% seo %}
 <meta name="theme-color" content="#eef2fb" />
+<meta name="color-scheme" content="light" />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+<meta name="keywords" content="service mesh, observability dashboard, network topology, microservices monitoring, dashboard UI, UI/UX portfolio, SRE console, HTML CSS JavaScript" />
 
-<!-- every path here is relative, so the site also works from a
-     GitHub Pages project URL such as /username.github.io/meshscope/ -->
+<!-- every asset path is relative, so the site also works from a
+     GitHub Pages project URL such as username.github.io/meshscope/ -->
 <link rel="icon" href="favicon.ico" sizes="32x32" />
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
+<link rel="sitemap" type="application/xml" href="sitemap.xml" />
 
-<meta property="og:type" content="website" />
-<meta property="og:title" content="MeshScope — Live service traffic" />
-<meta property="og:description" content="Topology, zones, traces and alerts for a service mesh, in one console." />
-<meta property="og:image" content="assets/img/og-cover.png" />
-<meta name="twitter:card" content="summary_large_image" />
+<!-- what the page is, for search engines that read structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "{{ site.title }}",
+  "alternateName": "{{ site.tagline }}",
+  "url": "{{ '/' | absolute_url }}",
+  "image": "{{ '/assets/img/og-cover.png' | absolute_url }}",
+  "description": "{{ site.description | strip | escape }}",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any modern web browser",
+  "browserRequirements": "Requires JavaScript",
+  "isAccessibleForFree": true,
+  "inLanguage": "en",
+  "keywords": "service mesh, observability, topology map, microservices, dashboard UI, UI/UX",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "creator": { "@type": "Person", "name": "{{ site.author.name }}"{% if site.author.url %}, "url": "{{ site.author.url }}"{% endif %} }{% if site.github.repository_url %},
+  "codeRepository": "{{ site.github.repository_url }}"{% endif %}
+}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -128,7 +154,7 @@
     </div>
     <div>
       <h1 class="rise" style="animation-delay:.18s">Every hop,<br>every <em>millisecond</em>.</h1>
-      <p class="rise" style="animation-delay:.26s">The console reads your service mesh live — who is calling whom, how fast, and what is about to fall over. Sign in to pick up the eu-west-1 map where you left it.</p>
+      <p class="rise" style="animation-delay:.26s">An interactive demo of a service-mesh observability console — a live topology map with animated traffic, plus traces, alerts, incidents and on-call routing. Sign in with any password to explore it.</p>
       <ul class="facets rise" style="animation-delay:.34s">
         <li><span class="dot ok"></span><b>214</b> services nominal</li>
         <li><span class="dot warm"></span><b>6</b> warming</li>
@@ -147,7 +173,7 @@
       <p class="sub">Use your work account to open the traffic console.</p>
 
       <div class="field" id="fEmail">
-        <input id="email" type="email" placeholder=" " autocomplete="username" value="muhammad.alfian@pkp.co.id" />
+        <input id="email" type="email" placeholder=" " autocomplete="username" value="alfian@example.com" />
         <label for="email">Work email</label>
       </div>
       <div class="field-msg" id="mEmail">Enter the email your team uses for MeshScope.</div>
@@ -183,9 +209,19 @@
         <button type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg> Azure AD</button>
       </div>
       <p class="hint">Prototype — any password of 6+ characters opens the console. Press <kbd>Enter</kbd> to go straight in.</p>
+      <p class="credit">Designed &amp; built by {{ site.author.name }}{% if site.github.repository_url %} · <a href="{{ site.github.repository_url }}" rel="noopener">Source on GitHub</a>{% endif %}</p>
     </form>
   </div>
 </section>
+
+<noscript>
+  <div class="noscript">
+    <h2>MeshScope needs JavaScript</h2>
+    <p>MeshScope is an interactive UI demo of a service-mesh observability console: a live topology map with
+    animated traffic between microservices, plus pages for services, zones, traces, alerts, incidents, saved views,
+    runbooks, notification routing and settings. All data is simulated in the browser. Turn on JavaScript to explore it.</p>
+  </div>
+</noscript>
 
 <!-- ============ console ============ -->
 <section class="screen app" id="app" hidden>

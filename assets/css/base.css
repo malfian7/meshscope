@@ -215,3 +215,12 @@ button{background:none;border:0;padding:0;cursor:pointer}
 .login.leaving .card{animation:cardOut .55s var(--io) forwards}
 @keyframes briefOut{to{opacity:0;transform:translateY(-18px);filter:blur(6px)}}
 @keyframes cardOut{to{opacity:0;transform:translateY(-10px) scale(.96);filter:blur(8px)}}
+
+/* portfolio credit under the sign-in card, and the no-JS fallback */
+.credit{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line-soft);font-size:11px;color:var(--ink-3);text-align:center}
+.credit a{color:var(--packet);text-decoration:none;font-weight:550}
+.credit a:hover{text-decoration:underline}
+.noscript{max-width:560px;margin:14vh auto;padding:28px;border-radius:var(--r-4);background:#fff;box-shadow:var(--lift-2);font-family:"Inter Tight",sans-serif;color:var(--ink-2);line-height:1.6}
+.noscript h2{font-family:"Space Grotesk",sans-serif;color:var(--ink-1);margin:0 0 8px}
+.hint kbd{display:inline;min-width:0;height:auto;box-shadow:none;font-weight:500}
+.credit a{white-space:nowrap}

@@ -630,7 +630,7 @@ const BUILD_settings=view=>{
           <div class="card-h"><span class="sq" style="width:22px;height:22px;border-radius:7px;background:var(--sunk);display:grid;place-items:center">
             <svg class="ico" style="width:12px;height:12px;stroke:var(--ink-2)"><use href="#i-bell"/></svg></span>
             <h3>Paging</h3></div>
-          ${sw('setEmail',true,'Email me when a rule fires','Sent to muhammad.alfian@pkp.co.id.')}
+          ${sw('setEmail',true,'Email me when a rule fires','Sent to alfian@example.com.')}
           ${sw('setSev1',false,'Only page me for SEV-1','Everything else waits for the morning digest.')}
           ${sel('setChannel','#mesh-alerts','Slack channel','Where alert threads are opened.')}
         </div>

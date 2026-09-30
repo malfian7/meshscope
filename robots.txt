@@ -1,0 +1,9 @@
+---
+layout: null
+sitemap: false
+---
+# Let every search engine read the whole site.
+User-agent: *
+Allow: /
+
+Sitemap: {{ "/sitemap.xml" | absolute_url }}
